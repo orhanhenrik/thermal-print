@@ -3,7 +3,7 @@ var port = new SP('/dev/usb/lp0', {autoOpen:false})
 var qr = require('qr-image');
 
 function getPort(cb) {
-  if (port.isOpen) {
+  if (port.isOpen()) {
     cb(port);
   } else {
     port.open(function(err){
@@ -69,11 +69,13 @@ function printMatrix(port, matrix, cb) {
     pixels[i] = matrix[y_index][x_index] * 255;
   }
 
-	var buffer = Buffer.concat([
-		new Buffer([0x1d, 0x76, 0x30, 48, xL, xH, yL, yH]),
-		new Buffer(pixels),
-		new Buffer([0x1b, 0x64, 2])
-	]);
+  var buffer = Buffer.concat([
+    new Buffer([0x1d, 0x76, 0x30, 48, xL, xH, yL, yH]),
+    new Buffer(pixels),
+    new Buffer([0x1b, 0x64, 2])
+  ]);
 
-	port.write(buffer, cb);
+  port.write(buffer, function(){
+    port.drain(cb);
+  });
 }
