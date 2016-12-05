@@ -30,6 +30,10 @@ var printing = false;
 
 function processPrintQueue() {
   if(!printing) {
+    if(!printQueue.length){
+      setTimeout(processPrintQueue, 50);
+      return;
+    }
     printing = true;
     getPort(function(port) {
       job = printQueue.shift();
