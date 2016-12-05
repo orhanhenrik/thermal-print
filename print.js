@@ -53,21 +53,34 @@ function printMatrixJob(matrix) {
 }
 
 function printMatrix(port, matrix, cb) {
-  width = matrix.length;
-  height = matrix.length;
+  width = 384;// matrix.length;
+  height = 384;// matrix.length;
 
   m = 0x30;
-  xL = width
+  xL = int(width / 8);
   xH = 0;
-  yL = height*8 % 256;
-  yH = Math.floor(height*8 / 256);
+  yL = height % 256;
+  yH = Math.floor(height / 256);
 
   var pixels = [];
+  for(var y = 0; y < height; y++) {
+    var byte = 0;
+    for(var x = 0; x < width; x+=8) {
+      for(var k=0; k < 8; k++) {
+        value = 1;
+        byte |= value << (7-k)
+      }
+    }
+    pixels.push(byte);
+  }
+
+  /*
   for (var i=0; i<xL*(yL+yH*256); i++){
     y_index = Math.floor(i / xL / 8);
     x_index = (i - y_index*8*xL) % xL;
     pixels[i] = matrix[y_index][x_index] * 255;
   }
+  */
 
   var buffer = Buffer.concat([
     new Buffer([0x1d, 0x76, 0x30, 48, xL, xH, yL, yH]),
