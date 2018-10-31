@@ -21,7 +21,7 @@ function closePort(cb) {
 }
 
 var printQueue = [
- // printMatrixJob(qr.matrix("Hei Larsen")),
+  printMatrixJob(qr.matrix("Hei Larsen")),
   printMatrixJob(qr.matrix("Hei Orhan")),
   printMatrixJob(qr.matrix("Hei Sylliaas")),
 ];
